@@ -1,50 +1,79 @@
-Vim Tmux Navigator
+Proper Vim Tmux Navigator
 ==================
+Will you, vim, take tmux as your lawfully wedded terminal multiplexer, til death do you part?
 
-This plugin is a repackaging of [Mislav Marohnić's][] tmux-navigator
-configuration described in [this gist][]. When combined with a set of tmux
-key bindings, the plugin will allow you to navigate seamlessly between
-vim and tmux splits using a consistent set of hotkeys.
 
-**NOTE**: This requires tmux v1.8 or higher.
+Differences:
+- Faster (hopefully)
+	* Doesn't trigger autocmds when test-switching windows, 
+	* Cleaned up vim< >tmux passing?
+- Adds window resizing using the same principles as switching
+	* Unifies both vim and tmux to use a more natural (for hjkl) direction-wise
+	* Both takes count and allows key repeat
+- Maximize/zoom also unified (using whatever that plug is)
+- loop vim window navigation like how tmux does
+
+Todo:
+- command to set width of current pane/window to 80
+- command like <C-w>= covering both vim and tmux
+- auto-size (and then restore!!) windows as move between them, sorta like GoldenView but not buggy 
+	and extending covering tmux (will prob be a bitch to get working)
+	AND not fucking up vim horizontal viewport
+	also would need to fix shell spewing prompts on resize or it would suck, but got an idea for how to fix that in fish
+	^ this will be fucking glorious
+
+- Fix up some inconsitencies as far as what makes stuff go where when
+- Defer redraws somehow so press-and-hold works better?
+- Add a way to force "the opposite" so don't have to fall back on seperate
+	vim/tmux mappings to eg. maximize a tmux pane from within vim etc
+
+- Maximize only in specific direction
+- Minimize/bury
+- Split creation something, maybe? Like my current <Leader>s[hjkl] / < Prefix >[hjkl] 
+	resulting in	<Space>s[hjkl] / <C-s>[hjkl]
+	Is nice because has very similar feel. But proper unified even better.
+
+- Unified go-to-win a la prefix-c but for both tmux and vim
+	Each window/pane gets an identifier to stick in tmux pane status /
+	vim window statusline, and so can be jumped to directly
+
+- extend this one step further, to iTerm/similar splits...
+- END GOAL: Reimplement literally all of tmux in pure* vimscript 
+	(*might have to resort to visual basic for the tricky bits)
+
+
+Based on [christoomey's][] vim-tmux-navigator, in turn derived from
+[Mislav Marohnić's][] tmux-navigator configuration
+
 
 Usage
 -----
 
-This plugin provides the following mappings which allow you to move between
-Vim panes and tmux splits seamlessly.
+Not a fan of plugs taking over a bunch of existing mappings like they own the place,
+and you should prob sort your own binds to suit your workflow, conflicts, and conventions.
+but some default ones can be enabled if you don't want to start from scratch.
+Since these mappings are direct, and not behind a tmux-prefix, whatever mapping you 
+go with will likely conflict with something or other, so choose your poison.
 
-- `<ctrl-h>` => Left
-- `<ctrl-j>` => Down
-- `<ctrl-k>` => Up
-- `<ctrl-l>` => Right
-- `<ctrl-\>` => Previous split
+I would advice against the `<C-[hjkl]>` from vim-tmux-navigator, or my personal config:
+`<M-hjkl>` to navigate, `<M-HJKL>` to resize (5 rows/3 lines by default)
+Meta is superior imo, allowing easy one-handed navigation, case sensitivity,
+and generally far fewer conflicts with conventional bindings in and out of vim.
 
-**Note** - you don't need to use your tmux `prefix` key sequence before using
-the mappings.
+Real rock star pro grammers keepin it home row might want to modal shit up with
+eg. Karabiner + Hammerspoon for some non-modifier prefix action. And so should you!
 
-If you want to use alternate key mappings, see the [configuration section
-below][].
+
+- `<M-z>` => Previous split
+
 
 Installation
 ------------
 
 ### Vim
 
-If you don't have a preferred installation method, I recommend using [Vundle][].
-Assuming you have Vundle installed and configured, the following steps will
-install the plugin:
-
-Add the following line to your `~/.vimrc` file
-
 ``` vim
-Plugin 'christoomey/vim-tmux-navigator'
-```
-
-Then run
-
-```
-:PluginInstall
+Plug 'tolgraven/proper-vim-tmux-navigator'
 ```
 
 ### tmux
@@ -96,7 +125,7 @@ match.
 Add the following to your `~/.vimrc` to define your custom maps:
 
 ``` vim
-let g:tmux_navigator_no_mappings = 1
+let g:proper_tmux_navigator_no_mappings = 1
 
 nnoremap <silent> {Left-Mapping} :TmuxNavigateLeft<cr>
 nnoremap <silent> {Down-Mapping} :TmuxNavigateDown<cr>
@@ -111,7 +140,7 @@ Left would be created with `nnoremap <silent> <c-h> :TmuxNavigateLeft<cr>`.
 
 ##### Autosave on leave
 
-You can configure the plugin to write the current buffer, or all buffers, when navigating from Vim to tmux. This functionality is exposed via the `g:tmux_navigator_save_on_switch` variable, which can have either of the following values:
+You can configure the plugin to write the current buffer, or all buffers, when navigating from Vim to tmux. This functionality is exposed via the `g:proper_tmux_navigator_save_on_switch` variable, which can have either of the following values:
 
 Value  | Behavior
 ------ | ------
@@ -122,7 +151,7 @@ To enable this, add the following (with the desired value) to your ~/.vimrc:
 
 ```vim
 " Write all buffers before navigating from Vim to tmux pane
-let g:tmux_navigator_save_on_switch = 2
+let g:proper_tmux_navigator_save_on_switch = 2
 ```
 
 ##### Disable While Zoomed
@@ -132,7 +161,7 @@ By default, if you zoom the tmux pane running Vim and then attempt to navigate
 default tmux behavior, but may be confusing if you've become accustomed to
 navigation "wrapping" around the sides due to this plugin.
 
-We provide an option, `g:tmux_navigator_disable_when_zoomed`, which can be used
+We provide an option, `g:proper_tmux_navigator_disable_when_zoomed`, which can be used
 to disable this unzooming behavior, keeping all navigation within Vim until the
 tmux pane is explicitly unzoomed.
 
@@ -140,8 +169,10 @@ To disable navigation when zoomed, add the following to your ~/.vimrc:
 
 ```vim
 " Disable tmux navigator when zooming the Vim pane
-let g:tmux_navigator_disable_when_zoomed = 1
+let g:proper_tmux_navigator_isable_when_zoomed = 1
 ```
+or flip maybe
+let g:proper_tmux_navigator_stick_to_visible = 0
 
 #### Tmux
 
@@ -213,16 +244,10 @@ your OS, Vim version, and tmux version as possible.
 
 [open an issue]: https://github.com/christoomey/vim-tmux-navigator/issues/new
 
-### Tmux Can't Tell if Vim Is Active
 
-This functionality requires tmux version 1.8 or higher. You can check your
-version to confirm with this shell command:
+### It feels too slow
 
-``` bash
-tmux -V # should return 'tmux 1.8'
-```
-
-### Switching out of Vim Is Slow
+`:time system('echo')`
 
 If you find that navigation within Vim (from split to split) is fine, but Vim
 to a non-Vim tmux pane is delayed, it might be due to a slow shell startup.
@@ -230,42 +255,6 @@ Consider moving code from your shell's non-interactive rc file (e.g.,
 `~/.zshenv`) into the interactive startup file (e.g., `~/.zshrc`) as Vim only
 sources the non-interactive config.
 
-### It Doesn't Work in tmate
-
-[tmate][] is a tmux fork that aids in setting up remote pair programming
-sessions. It is designed to run alongside tmux without issue, but occasionally
-there are hiccups. Specifically, if the versions of tmux and tmate don't match,
-you can have issues. See [this
-issue](https://github.com/christoomey/vim-tmux-navigator/issues/27) for more
-detail.
-
-[tmate]: http://tmate.io/
-
-### It Doesn't Work in Neovim (specifically C-h)
-
-[Neovim][] is a Vim fork. While Neovim is intended to be a drop-in replacement
-for Vim, it does handle some keyboard input differently than Vim does. Some
-users (including those on OS X) may find that all of their pane-switching
-keybindings work with the exception of <kbd>Ctrl</kbd>+<kbd>h</kbd>, which
-instead returns a backspace. The explanation of what is going on vastly exceeds
-the scope of this guide, but you can read the discussion on this Neovim
-[issue][].
-
-The simplest and hackiest solution is to add the following to your Neovim
-`init.vim`, capturing the <kbd>Backspace</kbd> that Neovim receives when
-<kbd>Ctrl</kbd>+<kbd>h</kbd> is typed in normal mode:
-
-```vimL
-nnoremap <silent> <BS> :TmuxNavigateLeft<cr>
-```
-
-A more complete and less-hacky solution would be to update the incorrect
-terminfo entry that is part of the problem on OS X (and some Linux
-distributions) as described in this [comment][].
-
-[Neovim]: https://neovim.io/
-[issue]: https://github.com/neovim/neovim/issues/2048
-[comment]: https://github.com/neovim/neovim/issues/2048#issuecomment-78045837
 
 ### It Still Doesn't Work!!!
 
@@ -277,7 +266,6 @@ script][] which has a more robust check.
 [Brian Hogan]: https://twitter.com/bphogan
 [Mislav Marohnić's]: http://mislav.uniqpath.com/
 [Mislav's original external script]: https://github.com/mislav/dotfiles/blob/master/bin/tmux-vim-select-pane
-[Vundle]: https://github.com/gmarik/vundle
 [TPM]: https://github.com/tmux-plugins/tpm
 [configuration section below]: #custom-key-bindings
 [this blog post]: http://www.codeography.com/2013/06/19/navigating-vim-and-tmux-splits
