@@ -1,58 +1,57 @@
-Proper Vim Tmux Navigator
+Proper Vim Tmux Nav
 ==================
 Will you, vim, take tmux as your lawfully wedded terminal multiplexer, til death do you part?
 
-
-Differences:
+Differences from vim-tmux-navigator:
 - Slightly faster (hopefully)
-	* Doesn't trigger autocmds when test-switching windows, 
+	* Doesn't trigger autocmds when test-switching windows 
 	* Cleaned up vim< >tmux passing?
 - Adds window resizing using the same principles as switching
-	* Unifies both vim and tmux to use a more natural (for hjkl) tmux-style direction wise
-	* Both takes count and allows key repeat
-- Maximize/zoom unified 
-	* reimplement/steal vim-maximize
-- Quit/close window/pane
-- loop vim window navigation like how tmux does
-- Direction-wise navigation always takes you to the window that makes sense, regardless
-	of previous straight jumps
-- Quickly double tapping `last window` takes you to the second most recent, etc?
+	* Unifies vim and tmux to use the more natural (for hjkl) tmux-style direction-wise
+	* Takes count, allows key repeat
+- Quit/close window/pane (p dangerous I guess, optional)
 
 Planned:
+- Maximize/zoom unified (reimplement/steal vim-maximize etc)
+- looparound vim window navigation like how tmux does
+- Direction-wise navigation always taking you to the nearest window/pane in that direction, even between tmux and vim and regardless of previous jumps...
+- Quickly double tapping `last window` takes you to the second most recent, etc?
+	Like how Tab Ahead works in Chrome
+
+Maybe:
 - command to set width of current pane/window to 80
 - equalize a la <C-w>= covering both vim and tmux
-- auto-size (and then restore!!) windows as move between them, sorta like GoldenView but not buggy 
-	and extending covering tmux (will prob be a bitch to get working)
-	AND not fucking up vim horizontal viewport
-	also would need to fix shell spewing prompts on resize or it would suck, but got an idea for how to fix that in fish
+- auto-size (and restore!) windows as move between them, sorta like GoldenView but not buggy and extending covering tmux (will prob be a bitch to get working)
+	* AND not fucking up vim horizontal viewport
+	* also would need to fix shell spewing prompts on resize or it would suck, but got an idea for how to fix that in fish
 	^ this will be fucking glorious
 
-- Fix up some inconsitencies as far as what makes stuff go where when
 - Defer redraws somehow so press-and-hold works better?
-- Add a way to force "the opposite" so don't have to fall back on seperate
-	vim/tmux mappings to eg. maximize a tmux pane from within vim etc
+- Add a way to force "the opposite" so don't have to fall back on seperate vim/tmux mappings to eg. maximize a tmux pane from within vim etc
 	* Still would want some specific shortcuts for this for some cases,
-		like double tap zoom/maximize = outer. Maybe kill pane as well, but then def
-		with a y/n prompt tho...
+		like double tap zoom/maximize = outer. Maybe kill pane as well, but then def with a y/n prompt tho...
 - Other prefix to anchor right/below so don't have to switch back and forth to resize certain ways.
 	* Preferably using a timer so can press it just once and then spam
 
-- Maximize only in specific direction
-	* Just add an arrangement save to my existing mj/mk bindings, and extent to tmux
+- Maximize only in specific direction instead of completely
+	* For basic, just add an arrangement save to my existing mj/mk bindings, and extend to tmux
+	* But actual point of it is obviously the restore part...
 - Minimize/bury
-- Split creation something, maybe? Like my current <Leader>s[hjkl] / < Prefix >[hjkl] 
-	resulting in	<Space>s[hjkl] / <C-s>[hjkl]
+- Split creation something, maybe? Like my current <Leader>s[hjkl] / < Prefix ><M-[hjkl]>
+	aka	<Space>s[hjkl] / <C-s><M-[hjkl]>
 	Is nice because has very similar feel. But proper unified even better.
-	<M-s><M-[hjkl]> I guess?
+	* <M-s><M-[hjkl]> I guess?
+	* Considering tmux has ability to do leader key type shit now maybe just hook on space (or whatever lesser key idiots might be using) when vim is up?
+		And have tmux handle it.
 
-- Unified go-to-win a la prefix-c but for both tmux and vim and even better
+- Unified go-to-win a la prefix-q but for both tmux and vim and even better
 	Each window/pane gets an identifier to stick in tmux pane status /
 	vim window statusline, and so can be jumped to directly
 
 - Undo close. Not proper iTerm-style but at least restore window/position, buffer/contents,
 	def feasible.
 
-Eh:
+Obviously:
 - extend one step further, to iTerm/similar splits...
 - Reimplement literally all of tmux in pure* vimscript 
 	(*might have to resort to visual basic for the tricky bits)
@@ -67,17 +66,24 @@ Usage
 
 Not a fan of plugs taking over a bunch of existing mappings like they own the place,
 and you should prob sort your own binds to suit your workflow, conflicts, and conventions.
-but some default ones can be enabled if you don't want to start from scratch.
+but some default ones can be enabled if you* know what's good for you.
 Since these mappings are direct, and not behind a tmux-prefix, whatever mapping you 
-go with will likely conflict with something or other, so choose your poison.
+go with will likely conflict with something or other, so pick your poison**.
 
-I would advice against the `<C-[hjkl]>` from vim-tmux-navigator, or my personal config:
-`<M-hjkl>` to navigate, `<M-HJKL>` to resize (5 rows/3 lines by default)
-Meta is superior imo, allowing easy one-handed navigation, case sensitivity,
-and generally far fewer conflicts with conventional bindings in and out of vim.
+* I
+** I have the best poison
+
+Anyways, fuck the `<C-[hjkl]>` from vim-tmux-navigator, use my config:
+`<M-hjkl>` to navigate, `<M-HJKL>` to resize (4 rows/2 lines by default)
+Meta is superior, allowing easy one-handed navigation, case sensitivity,
+and far fewer conflicts with conventional bindings in and out of vim.
 
 Real rock star pro grammers keepin it home row might want to modal shit up with
-eg. Karabiner + Hammerspoon for some non-modifier prefix action. And so should you!
+Karabiner + Hammerspoon for some non-modifier prefix action. And so should you!
+
+You already have caps lock remapped to Esc / Ctrl, right? Otherwise quit reading and do that
+Here's another one:
+<Tab> 		=> Tab / Meta-Shift
 
 My other defaults, I guess:
 - `<M-z>` => Previous (last) window/pane
@@ -89,9 +95,7 @@ My other defaults, I guess:
 Recommendations
 ---------------
 
-You already have caps lock remapped to esc + ctrl, right?
-Here's another one:
-<Tab> 		=> Tab + Meta-Shift
+Help me do the boring bits I can't bother with please
 
 
 Installation
@@ -100,7 +104,7 @@ Installation
 ### Vim
 
 ``` vim
-Plug 'tolgraven/proper-vim-tmux-navigator'
+Plug 'tolgraven/proper-vim-tmux-nav'
 ```
 
 
@@ -112,7 +116,7 @@ Configuration
 Add the following to your `~/.vimrc` to define your custom maps:
 
 ``` vim
-let g:proper_tmux_navigator_no_mappings = 1
+let g:proper_tmux_nav_no_mappings = 1
 
 nnoremap <silent> {Left-Mapping} :TmuxNavigateLeft<cr>
 nnoremap <silent> {Down-Mapping} :TmuxNavigateDown<cr>
@@ -123,19 +127,18 @@ nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
 
 ##### Autosave on leave
 
-Make this mirror &autowrite / &autowriteall I guess, simpler...
+Make this mirror &autowrite / &autowriteall I guess? simpler...
 But keep the user var for manual set in case some freak wants it
 
 ##### Automatically exit zoom
 
 By default, direction-wise navigation is restricted to what is visible -  
-when at an edge, instead of automatically unzooming hidden panes, we keep it
-WYSIWYG and wrap around.
+when at an edge, instead of automatically unzooming hidden panes, keep it WYSIWYG and wrap.
 Both these behaviors can be changed:
 
 ```vim
-let g:proper_tmux_navigator_auto_unzoom = 1
-let g:proper_tmux_navigator_disable_wrap = 1
+let g:proper_tmux_nav_auto_unzoom = 1
+let g:proper_tmux_nav_disable_wrap = 1
 ```
 
 #### Tmux
@@ -144,7 +147,7 @@ let g:proper_tmux_navigator_disable_wrap = 1
 
 #### Nesting
 
-Anyone interested in implementing this is welcome to do it.
+Someone please implement.
 
 
 Troubleshooting
