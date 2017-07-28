@@ -45,9 +45,12 @@ Planned:
 	Is nice because has very similar feel. But proper unified even better.
 	<M-s><M-[hjkl]> I guess?
 
-- Unified go-to-win a la prefix-c but for both tmux and vim
+- Unified go-to-win a la prefix-c but for both tmux and vim and even better
 	Each window/pane gets an identifier to stick in tmux pane status /
 	vim window statusline, and so can be jumped to directly
+
+- Undo close. Not proper iTerm-style but at least restore window/position, buffer/contents,
+	def feasible.
 
 Eh:
 - extend one step further, to iTerm/similar splits...
@@ -76,8 +79,19 @@ and generally far fewer conflicts with conventional bindings in and out of vim.
 Real rock star pro grammers keepin it home row might want to modal shit up with
 eg. Karabiner + Hammerspoon for some non-modifier prefix action. And so should you!
 
+My other defaults, I guess:
+- `<M-z>` => Previous (last) window/pane
+<M-m> 		=> Maximize
+<M-q> 		=> Quit / close
+<M-0> 		=> Equalize?
 
-- `<M-z>` => Previous split
+
+Recommendations
+---------------
+
+You already have caps lock remapped to esc + ctrl, right?
+Here's another one:
+<Tab> 		=> Tab + Meta-Shift
 
 
 Installation
@@ -110,7 +124,7 @@ nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
 ##### Autosave on leave
 
 Make this mirror &autowrite / &autowriteall I guess, simpler...
-
+But keep the user var for manual set in case some freak wants it
 
 ##### Automatically exit zoom
 
@@ -149,6 +163,10 @@ tmux list-keys
 
 ### Sluggish performance
 
+Watch for:
+- Slow shell startup / system() calls
+- Vim plugins, especially with autocmds running on WinLeave / WinEnter
+	(Airline, for example)
 
 `:time system('echo')`
 

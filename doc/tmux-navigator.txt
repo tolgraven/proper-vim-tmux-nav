@@ -18,11 +18,7 @@ NOTE: This requires tmux v1.8 or higher.
 ==============================================================================
 CONFIGURATION                             *tmux-navigator-configuration*
 
-* Activate autoupdate on exit
- let g:tmux_navigator_save_on_switch = 1
 
-* Custom Key Bindings
- let g:tmux_navigator_no_mappings = 1
 
  nnoremap <silent> {Left-mapping} :TmuxNavigateLeft<cr>
  nnoremap <silent> {Down-Mapping} :TmuxNavigateDown<cr>
