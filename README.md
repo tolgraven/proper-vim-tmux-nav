@@ -2,6 +2,8 @@ Proper Vim Tmux Nav
 ==================
 Will you, vim, take tmux as your lawfully wedded terminal multiplexer, til death do you part?
 
+**WIP but nav and resize mostly functional**
+
 Differences from vim-tmux-navigator:
 - Slightly faster (hopefully)
 	* Doesn't trigger autocmds when test-switching windows 
