@@ -5,9 +5,9 @@ Will you, vim, take tmux as your lawfully wedded terminal multiplexer, til death
 **WIP but nav and resize mostly functional**
 
 Differences from vim-tmux-navigator:
-- Slightly faster (hopefully)
-	* Doesn't trigger autocmds when test-switching windows 
-	* Cleaned up vim< >tmux passing?
+- Slightly or amazingly faster (depending on how heavy your shell is)
+	* Doesn't trigger Vim autocmds when test-switching windows 
+	* Makes system() calls using sh, so even if you have a slow-to-start fish/zsh/bash/whatever setup it won't break yer groove
 - Adds window resizing using the same principles as switching
 	* Unifies vim and tmux to use the more natural (for hjkl) tmux-style direction-wise
 	* Takes count, allows key repeat
@@ -181,6 +181,7 @@ Consider moving code from your shell's non-interactive rc file (e.g.,
 `~/.zshenv`) into the interactive startup file (e.g., `~/.zshrc`) as Vim only
 sources the non-interactive config.
 
+If tmux nav is fast, but Vim slow, compare time to regular <C-w>, it's likely similar, and likely due to Airline being a fatass :(
 
 
 [Brian Hogan]: https://twitter.com/bphogan

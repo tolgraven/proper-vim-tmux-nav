@@ -24,9 +24,12 @@ function! s:TmuxSocket() "The socket path is the first value in the comma-separa
 endfunction
 
 function! s:TmuxCommand(args)
+	let s:saved_shell = &shell | set shell=sh "for me system('echo') thru fish is like 0.07s (after fixing a bunch of stuff, like 0.3 prior), zsh 0.07. Major difference!
   " let cmd = s:TmuxOrTmateExecutable() . ' -S ' . s:TmuxSocket() . ' ' . a:args
 	let cmd = 'tmux '	. a:args	"like seriously do we need the socket? Seems to always pick the right on right up front from what I vcan tell
-  return system(cmd)
+  let status = system(cmd)
+	let &shell = s:saved_shell
+	return status
 endfunction
 
 function! s:TmuxPaneCurrentCommand()
@@ -56,8 +59,6 @@ endfunction
 
 function! s:TmuxAwareNavigate(direction)
   let nr = winnr()
-	let s:saved_shell = &shell | set shell=bash 		"not sure whether to run with this or just stick to debug. But for me system('echo') thru fish is like 0.07s (after fixing a bunch of stuff, like 0.3 priot?), zsh 0.07?, bash 0.01...
-	"but then again it all definitely pales in comparison with just killing airline or whatever, fucking hell what's going on with that.
   let tmux_last_pane = (a:direction == 'p' && s:tmux_is_last_pane)
   if !tmux_last_pane | call s:VimNavigate(a:direction) | endif
   let at_tab_page_edge = (nr == winnr()) 	"did we get anywhere?
@@ -80,13 +81,12 @@ function! s:TmuxAwareNavigate(direction)
   else
     let s:tmux_is_last_pane = 0
   endif
-	let &shell = s:saved_shell
 endfunction
 
 
 function! s:WindowMaximize()
 	let numwindows = winnr('$')
-	if numwindows == 1 | call system('tmux resize-pane -Z')
+	if numwindows == 1 | call s:TmuxCommand('tmux resize-pane -Z')
 	else 							 | execute 'MaximizerToggle!'	 
 	endif
 endfunction
@@ -110,7 +110,7 @@ endfunction
 let s:vim_to_tmux ={ '<':'-L', '>':'-R', '+':'-D', '-':'-U' }
 "XXX: cant resize smaller than like 10 wide, weird cause eg tinykeymap doesnt share that issue
 function! s:TmuxAwareResize(sign, amount) 			"resize window by direction instead of +- etc
-	if winnr('$') == 1	| let pass_to_tmux = 1 		"only one vim window, go straight to tmux
+	if winnr('$') == 1	| let l:pass_to_tmux = 1 		"only one vim window, go straight to tmux
 	else								| let initial = winnr() 	"save the original window index
 		let isvert = (a:sign =~ '<\|>') ? 'vertical ' : ''
 		let anchor = (isvert == 'vertical ') ? 'h' : 'k'
@@ -137,8 +137,8 @@ function! s:TmuxAwareResize(sign, amount) 			"resize window by direction instead
 	endif
 
 	if get(l:, 'pass_to_tmux', 0)
-			let tmuxcmd = s:vim_to_tmux[a:sign]
-			execute 'call system("tmux resize-pane' . tmuxcmd .' '. a:amount '")'
+		let args = 'resize-pane ' . s:vim_to_tmux[a:sign] .' '. a:amount
+		call s:TmuxCommand(args)
 	endif
 endfunction
 
