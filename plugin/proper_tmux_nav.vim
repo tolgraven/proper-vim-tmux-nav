@@ -31,7 +31,7 @@ endfunction
 
 
 let s:tmux_is_last_pane = 0
-augroup proper_tmux_nav | autocmd! 	| autocmd WinEnter * let s:tmux_is_last_pane = 0 	| augroup END
+augroup proper_tmux_nav | autocmd! | autocmd WinEnter * let s:tmux_is_last_pane = 0 	| augroup END
 
 
 " Like `wincmd` but also change tmux panes instead of vim windows when needed.
@@ -59,7 +59,7 @@ function! s:TmuxAwareNavigate(direction)
     endif
     let args = 'select-pane -t ' . shellescape($TMUX_PANE) . ' -' . tr(a:direction, 'phjkl', 'lLDUR')
     silent call s:TmuxCommand(args)
-    let s:tmux_is_last_pane = 1
+    let s:tmux_is_last_pane 		 = 1
   else | let s:tmux_is_last_pane = 0 | endif
 endfunction
 
@@ -123,6 +123,8 @@ noremap <silent> <Plug>TmuxNavigateUp 			:call <SID>TmuxWinCmd('k')<CR>
 noremap <silent> <Plug>TmuxNavigateRight 		:call <SID>TmuxWinCmd('l')<CR>
 noremap <silent> <Plug>TmuxNavigatePrevious :call <SID>TmuxWinCmd('p')<CR>
 
+nnoremap <silent> <Plug>TmuxMaximize 				:call <SID>TmuxAwareMaximize()<CR>
+
 noremap	<silent> <Plug>TmuxResizeLeft 			:call <SID>TmuxAwareResize('<', g:proper_tmux_nav_small_resize * 2)<CR>
 noremap	<silent> <Plug>TmuxResizeDown 			:call <SID>TmuxAwareResize('+', g:proper_tmux_nav_small_resize)<CR>
 noremap <silent> <Plug>TmuxResizeUp 				:call <SID>TmuxAwareResize('-', g:proper_tmux_nav_small_resize)<CR>
@@ -138,6 +140,7 @@ noremap <silent> <Plug>TmuxResizeLargeRight :call <SID>TmuxAwareResize('>', floa
   nmap  <M-k> 				<Plug>TmuxNavigateUp
   nmap  <M-l> 				<Plug>TmuxNavigateRight
   nmap  <M-Z> 				<Plug>TmuxNavigatePrevious
+	nmap  <M-m> 				<Plug>TmuxMaximize
 	" XXX why this dont wurrrk?
   imap  <M-h> 				<Plug>TmuxNavigateLeft
   imap  <M-j> 				<Plug>TmuxNavigateDown
@@ -165,6 +168,8 @@ noremap <silent> <Plug>TmuxResizeLargeRight :call <SID>TmuxAwareResize('>', floa
 		tmap <M-j>        <C-\><C-n><Plug>TmuxNavigateDown
 		tmap <M-k>        <C-\><C-n><Plug>TmuxNavigateUp
 		tmap <M-l>        <C-\><C-n><Plug>TmuxNavigateRight
+  	tmap <M-Z> 				<C-\><C-n><Plug>TmuxNavigatePrevious
+		tmap <M-m> 				<C-\><C-n><Plug>TmuxMaximize
 
 		tmap <M-H> 				<C-\><C-n><Plug>TmuxResizeLefti
 		tmap <M-J> 				<C-\><C-n><Plug>TmuxResizeDowni
