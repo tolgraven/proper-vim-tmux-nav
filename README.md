@@ -12,6 +12,7 @@ Differences from vim-tmux-navigator:
 	* Unifies vim and tmux to use the more natural (for hjkl) tmux-style direction-wise
 	* Takes count, allows key repeat
 - Quit/close window/pane (p dangerous I guess, optional)
+- Shitty basic integration with vim-maximize
 
 Planned:
 - Maximize/zoom unified (reimplement/steal vim-maximize etc)
