@@ -7,21 +7,32 @@ let g:proper_tmux_nav_small_resize 	 = get(g:, 'proper_tmux_nav_small_resize', 	
 let g:proper_tmux_nav_large_resize 	 = get(g:, 'proper_tmux_nav_large_resize', 		g:proper_tmux_nav_small_resize * 5)
 let g:proper_tmux_nav_mapping_preset = get(g:, 'proper_tmux_nav_mapping_preset', '')
 
-function! s:TmuxOrTmateExecutable() | return (match($TMUX, 'tmate') != -1 ? 'tmate' : 'tmux') | endfunction
-function! s:InTmuxSession() 				| return $TMUX != '' 																			| endfunction
-function! s:TmuxVimPaneIsZoomed() 	| return s:TmuxCommand("display-message -p '#{window_zoomed_flag}'") == 1 | endfunction
-function! s:TmuxSocket() 						| return split($TMUX, ',')[0] 	| endfunction	"socket path is first value in $TMUX
+function! s:TmuxOrTmateExecutable()
+	return (match($TMUX, 'tmate') != -1 ? 'tmate' : 'tmux')
+endfunction
+function! s:InTmuxSession()
+	return $TMUX != ''
+endfunction
+function! s:TmuxVimPaneIsZoomed()
+	return s:TmuxCommand("display-message -p '#{window_zoomed_flag}'") == 1
+endfunction
+function! s:TmuxSocket()
+	return split($TMUX, ',')[0]
+endfunction	"socket path is first value in $TMUX
 
 function! s:TmuxCommand(args)
 	let s:saved_shell = &shell | set shell=sh "for me system('echo') thru fish is like 0.07s (after fixing a bunch of stuff, like 0.3 prior), zsh 0.07. Major difference!
-  " let cmd = s:TmuxOrTmateExecutable() . ' -S ' . s:TmuxSocket() . ' ' . a:args	"like seriously do we need the socket? Seems to always pick the right one right up front from what I can tell
-	let cmd = s:TmuxOrTmateExecutable() . a:args
-  let status = system(cmd) 	"doesnt even work like this I guess
+  let cmd = s:TmuxOrTmateExecutable() . ' -S ' . s:TmuxSocket() . ' ' . a:args	"like seriously do we need the socket? Seems to always pick the right one right up front from what I can tell
+	" let cmd = s:TmuxOrTmateExecutable() . a:args
+	" let cmd = 'tmux ' . a:args
+  let status = system(cmd)
 	let &shell = s:saved_shell
 	return status
 endfunction
 
-function! s:TmuxPaneCurrentCommand() | echo s:TmuxCommand("display-message -p '#{pane_current_command}'") | endfunction
+function! s:TmuxPaneCurrentCommand()
+	echo s:TmuxCommand("display-message -p '#{pane_current_command}'")
+endfunction
 command! TmuxPaneCurrentCommand 	call s:TmuxPaneCurrentCommand()
 
 function! s:ShouldForwardNavigationBackToTmux(tmux_last_pane, at_tab_page_edge)
@@ -31,7 +42,9 @@ endfunction
 
 
 let s:tmux_is_last_pane = 0
-augroup proper_tmux_nav | autocmd! | autocmd WinEnter * let s:tmux_is_last_pane = 0 	| augroup END
+augroup proper_tmux_nav | autocmd!
+	autocmd WinEnter * let s:tmux_is_last_pane = 0 
+augroup END
 
 
 " Like `wincmd` but also change tmux panes instead of vim windows when needed.
@@ -76,9 +89,9 @@ function! s:VimNavigate(direction) abort
 	" let s:timer = timer_start(100, function('s:DeferredAutocmdsCallback'))
 endfunction
 
-function! s:DeferredAutocmdsCallback(...) abort
-
-endfunction
+" function! s:DeferredAutocmdsCallback(...) abort
+"
+" endfunction
 
 
 let s:vim_to_tmux ={ '<':'-L', '>':'-R', '+':'-D', '-':'-U' }
